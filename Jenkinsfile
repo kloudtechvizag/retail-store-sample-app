@@ -8,19 +8,37 @@ pipeline {
 
   stages {
 
-    stage('Build & Test') {
-      parallel {
-        stage('UI') {
-          steps {
+    stage('UI') {
+        steps {
             dir("${SRC_DIR}/ui") {
-              sh '././mvnw clean package -DskipTests'
-              sh './mvnw test'
-              junit '**/target/surefire-reports/*.xml'
+                sh '././mvnw clean package -DskipTests'
+                sh './mvnw test'
+                junit '**/target/surefire-reports/*.xml'
             }
-          }
         }
+    }
 
-        // stage('Catalog') {
+    stage('Cart') {
+        steps {
+            dir("${SRC_DIR}/cart") {
+                sh './mvnw clean package -DskipTests'
+                sh './mvnw test'
+                junit '**/target/surefire-reports/*.xml'
+            }
+        }
+    }
+
+    stage('Orders') {
+        steps {
+            dir("${SRC_DIR}/orders") {
+                sh './mvnw clean package -DskipTests'
+                sh './mvnw test'
+                junit '**/target/surefire-reports/*.xml'
+            }
+        }
+    }
+
+    // stage('Catalog') {
         //   steps {
         //     dir("${SRC_DIR}/catalog") {
         //       sh 'go mod tidy'
@@ -29,25 +47,7 @@ pipeline {
         //   }
         // }
 
-        stage('Cart') {
-          steps {
-            dir("${SRC_DIR}/cart") {
-              sh './mvnw clean package -DskipTests'
-              sh './mvnw test'
-              junit '**/target/surefire-reports/*.xml'
-            }
-          }
-        }
-
-        stage('Orders') {
-          steps {
-            dir("${SRC_DIR}/orders") {
-              sh './mvnw clean package -DskipTests'
-              sh './mvnw test'
-              junit '**/target/surefire-reports/*.xml'
-            }
-          }
-        }
+        
 
         // stage('Checkout') {
         //   steps {
@@ -57,8 +57,7 @@ pipeline {
         //     }
         //   }
         // }
-      }
-    }
+
 
     // stage('Dockerize & Push') {
     //   parallel {
